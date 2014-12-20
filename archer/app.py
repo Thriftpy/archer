@@ -1,14 +1,25 @@
 # -*- coding: utf-8 -*-
 
 import os
+import threading
 import time
 import functools
+import sys
+import thriftpy
+from thriftpy.protocol import TBinaryProtocolFactory
+from thriftpy.rpc import make_server
+from thriftpy.server import TThreadedServer
+from thriftpy.thrift import TProcessor
+from thriftpy.transport import TBufferedTransportFactory, TServerSocket
+
 from .config import ConfigAttribute
 from .observer import before_api_call, after_api_call, tear_down_api_call
+from ._server import run_simple
+from .logger import log
 
 
 class ApiMeta(object):
-    def __init__(self, app, name,f, args, kwargs):
+    def __init__(self, app, name, f, args, kwargs):
         self.app = app
         self.name = name
         self.f = f
@@ -30,11 +41,14 @@ class Archer(object):
     logger_name = ConfigAttribute('LOGGER_NAME')
     default_config = {}
 
-    def __init__(self, name, thrift_file):
+    def __init__(self, name, thrift_file, service):
         # if not os.path.exists(thrift_file):
-        #     raise
+        # raise
+        thrift_module = thriftpy.load(thrift_file)
 
-        self.app = None
+        self.thrift_file = thrift_file
+        self.service = getattr(thrift_module, service)
+        self.app = TProcessor(getattr(thrift_module, service), self)
 
         self.default_error_handler = None
 
@@ -50,8 +64,11 @@ class Archer(object):
 
         self.api_map = {}
 
-    def run(self, host=None, port=None, debug=None, **options):
-        pass
+    def run(self, host='127.0.0.1', port=6000, use_reloader=True, **options):
+
+        run_simple(host, port, self, extra_files=[self.thrift_file],
+                   use_reloader=use_reloader, **options)
+
 
     def errorhandler(self, exception):
         def decorator(f):
@@ -81,18 +98,12 @@ class Archer(object):
         self.teardown_api_funcs.append(f)
         return f
 
-    def api(self, api=None):
-        if isinstance(api, (str, unicode)):
-            def wrapper(func):
-                self.register_api(api, func)
-                return func
-            return wrapper
+    def api(self, f=None, name=None, **kwargs):
+        if f is None:
+            return functools.partial(self.api, name=name, **kwargs)
 
-        if callable(api):
-            self.register_api(api.func_name, api)
-            return api
-        raise ValueError('{} must be a callable object'.format(api))
-
+        self.register_api(name or f.func_name, f)
+        return f
 
     def register_api(self, name, f):
         if name in self.api_map:
@@ -118,7 +129,7 @@ class Archer(object):
     def wrap_api(self, name, f):
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
-            api_meta = ApiMeta(self, name,f, args, kwargs)
+            api_meta = ApiMeta(self, name, f, args, kwargs)
             before_api_call.notify(api_meta)
             ret_val = self.preprocess_api(api_meta)
             if ret_val is not None:
@@ -148,7 +159,7 @@ class Archer(object):
         raise
 
     def processor(self, iprot, oprot):
-        return self.processor(iprot, oprot)
+        return self.app.processor(iprot, oprot)
 
     def __getattr__(self, name):
         if name not in self.api_map:
