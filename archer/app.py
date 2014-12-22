@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
-
+import logging
 import os
-import threading
+
 import time
 import functools
-import sys
 import thriftpy
-from thriftpy.protocol import TBinaryProtocolFactory
-from thriftpy.rpc import make_server
-from thriftpy.server import TThreadedServer
 from thriftpy.thrift import TProcessor
-from thriftpy.transport import TBufferedTransportFactory, TServerSocket
 
 from .config import ConfigAttribute
-from .observer import before_api_call, after_api_call, tear_down_api_call
+from .event import before_api_call, after_api_call, tear_down_api_call
 from ._server import run_simple
-from .logger import log
+from .test import TestClient
+from ._compat import PY2
+from .config import Config
+from .ctx import current_app, AppContext, settings
 
 
 class ApiMeta(object):
@@ -39,16 +37,23 @@ class Archer(object):
     debug = ConfigAttribute('DEBUG')
     testing = ConfigAttribute('TESTING')
     logger_name = ConfigAttribute('LOGGER_NAME')
-    default_config = {}
+    default_config = {
+        'DEBUG': False,
+        'TESTING': False,
+        'LOGGER_NAME': None,
+    }
 
-    def __init__(self, name, thrift_file, service):
-        # if not os.path.exists(thrift_file):
-        # raise
+    def __init__(self, name, thrift_file, service, root_path=None):
         thrift_module = thriftpy.load(thrift_file)
 
         self.thrift_file = thrift_file
         self.service = getattr(thrift_module, service)
+        self.name = name
         self.app = TProcessor(getattr(thrift_module, service), self)
+
+        if root_path is None:
+            root_path = os.getcwd()
+        self.root_path = root_path
 
         self.default_error_handler = None
 
@@ -63,12 +68,47 @@ class Archer(object):
         self.error_handlers = {}
 
         self.api_map = {}
+        self.api_meta_map = {}
+
+        self.shell_context_processors = []
+
+        self.config = self.make_config()
+        self.logger = logging.getLogger(self.logger_name)
 
     def run(self, host='127.0.0.1', port=6000, use_reloader=True, **options):
-
         run_simple(host, port, self, extra_files=[self.thrift_file],
                    use_reloader=use_reloader, **options)
 
+    def app_context(self):
+        return AppContext(self)
+
+    def make_config(self):
+        import copy
+
+        return Config(self.root_path, copy.deepcopy(self.default_config))
+
+    def make_shell_context(self):
+        """Returns the shell context for an interactive shell for this
+        application.  This runs all the registered shell context
+        processors.
+
+        .. versionadded:: 1.0
+        """
+        rv = {'app': self,
+              'client': self.test_client,
+              'current_app': current_app,
+              'settings': settings}
+        for processor in self.shell_context_processors:
+            rv.update(processor())
+        return rv
+
+    def shell_context_processor(self, f):
+        """registers a shell context processor function.
+
+        .. versionadded:: 1.0
+        """
+        self.shell_context_processors.append(f)
+        return f
 
     def errorhandler(self, exception):
         def decorator(f):
@@ -102,21 +142,22 @@ class Archer(object):
         if f is None:
             return functools.partial(self.api, name=name, **kwargs)
 
-        self.register_api(name or f.func_name, f)
+        self.register_api(name or f.__name__, f, kwargs)
         return f
 
-    def register_api(self, name, f):
+    def register_api(self, name, f, meta):
         if name in self.api_map:
             raise KeyError("Api_name(%s) already registered in %s" % (
                 name, self.api_map[name].__module__
             ))
         self.api_map[name] = self.wrap_api(name, f)
+        if PY2:
+            self.api_map[name].__wrapped__ = f
+        self.api_meta_map[name] = meta
 
     def preprocess_api(self, api_meta):
         for handler in self.before_api_call_funcs:
             ret_val = handler(api_meta)
-            if ret_val is not None:
-                return ret_val
 
     def postprocess_api(self, api_meta, result_meta):
         for handler in self.after_api_call_funcs:
@@ -131,9 +172,7 @@ class Archer(object):
         def wrapper(*args, **kwargs):
             api_meta = ApiMeta(self, name, f, args, kwargs)
             before_api_call.notify(api_meta)
-            ret_val = self.preprocess_api(api_meta)
-            if ret_val is not None:
-                return ret_val
+            self.preprocess_api(api_meta)
             try:
                 ret_val = f(*args, **kwargs)
             except Exception as e:
@@ -160,6 +199,10 @@ class Archer(object):
 
     def processor(self, iprot, oprot):
         return self.app.processor(iprot, oprot)
+
+    @property
+    def test_client(self):
+        return TestClient(self)
 
     def __getattr__(self, name):
         if name not in self.api_map:

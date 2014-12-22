@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 _logger = None
+
+
 def log(type, message, *args, **kwargs):
-    """Log into the internal werkzeug logger."""
+    """Log into archer logger."""
     global _logger
     if _logger is None:
         import logging

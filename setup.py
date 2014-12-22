@@ -62,8 +62,8 @@ setup(
     py_modules=py_modules,
     include_package_data=True,
     install_requires=REQUIREMENTS,
-    # entry_points="""
-    # [console_scripts]
-    # gunicorn_thrift=gunicorn_thrift.thriftapp:run
-    # """
+    entry_points="""
+    [console_scripts]
+    archer=archer.cli:main
+    """
 )
