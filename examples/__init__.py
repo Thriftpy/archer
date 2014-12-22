@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
-
+import os
 
 from archer import Archer
 
-app = Archer('test_app', 'examples/pingpong.thrift', service='PingPong')
-app1 = Archer('test_app', 'examples/pingpong.thrift', service='PingPong')
+app = Archer('test_app',
+             os.path.join(os.path.dirname(__file__), 'pingpong.thrift'),
+             service='PingPong')
+app1 = Archer('test_app',
+              os.path.join(os.path.dirname(__file__), 'pingpong.thrift'),
+              service='PingPong')
 
 
 @app.api(name='get', api=None, ksadf=123)
@@ -14,7 +18,6 @@ def get(id):
 
 @app.api(SDF=123, sdfxcof=123123)
 def mget(ids):
-    # raise ValueError("no such id {}".format(ids))
     return u'you got it'
 
 
@@ -55,9 +58,6 @@ def fuck():
 def redis_ctx():
     return {'redis': redis}
 
-# app.mget(123)
-# print app.get(12)
-# print app.query(123)
-# print app.ping()
+
 if __name__ == '__main__':
     app.run()

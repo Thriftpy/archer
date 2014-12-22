@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Borrow from flask.config module
+    mostly copy from  flask.config
+    ~~~~~~~~~~~~~~
+
+    Implements the configuration related objects.
+
+    :copyright: (c) 2014 by Armin Ronacher.
+    :license: BSD, see LICENSE for more details.
 """
 
 import imp

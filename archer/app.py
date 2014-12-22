@@ -97,6 +97,7 @@ class Archer(object):
         """
         rv = {'app': self,
               'test_client': self.test_client,
+              'fake_client': self.fake_client,
               'current_app': current_app,
               'settings': settings}
         for processor in self.shell_context_processors:

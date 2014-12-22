@@ -14,8 +14,8 @@ def app():
     @app.api(SDF=123, sdfxcof=123123)
     def mget(ids):
         if ids > 100:
-            raise app.thrift_module.PingPongException(200, 'id cannot greater than 100')
-        # raise ValueError("no such id {}".format(ids))
+            raise app.thrift_module.PingPongException(
+                200, 'id cannot greater than 100')
         return u'you got it'
 
     @app.api(name='ping')
