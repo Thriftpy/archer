@@ -30,7 +30,7 @@ class Event(object):
                 for listener in listeners:
                     listener(*args, **kwargs)
         else:
-            for listener in self.listeners[None]:
+            for listener in self.listeners[target]:
                 listener(*args, **kwargs)
 
 

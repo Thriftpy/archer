@@ -118,6 +118,9 @@ class Config(dict):
         dict.__init__(self, defaults or {})
         self.root_path = root_path
 
+    def __getattr__(self, item):
+        return self[item]
+
     def from_envvar(self, variable_name, silent=False):
         """Loads a configuration from an environment variable pointing to
         a configuration file.  This is basically just a shortcut with nicer

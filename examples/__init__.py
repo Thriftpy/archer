@@ -25,7 +25,7 @@ def ping():
 
 @app.api
 def query(id):
-    return 123
+    return 'id'
 
 
 from archer.ext.archer_redis import Redis
@@ -38,7 +38,7 @@ redis = Redis(app)
 
 @app.api
 def redis_get(k):
-    return redis.get(k) + 'from app'
+    return redis.get(k) + ' from app'
 
 
 @app.api

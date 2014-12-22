@@ -10,7 +10,7 @@ from thriftpy.thrift import TProcessor
 from .config import ConfigAttribute
 from .event import before_api_call, after_api_call, tear_down_api_call
 from ._server import run_simple
-from .test import TestClient
+from .test import TestClient, FakeClient
 from ._compat import PY2
 from .config import Config
 from .ctx import current_app, AppContext, settings
@@ -50,6 +50,7 @@ class Archer(object):
         self.service = getattr(thrift_module, service)
         self.name = name
         self.app = TProcessor(getattr(thrift_module, service), self)
+        self.thrift_module = thrift_module
 
         if root_path is None:
             root_path = os.getcwd()
@@ -95,7 +96,7 @@ class Archer(object):
         .. versionadded:: 1.0
         """
         rv = {'app': self,
-              'client': self.test_client,
+              'test_client': self.test_client,
               'current_app': current_app,
               'settings': settings}
         for processor in self.shell_context_processors:
@@ -110,6 +111,9 @@ class Archer(object):
         self.shell_context_processors.append(f)
         return f
 
+    def register_default_error_handler(self, handler):
+        self.default_error_handler = handler
+
     def errorhandler(self, exception):
         def decorator(f):
             self.register_error_handler(exception, f)
@@ -120,8 +124,8 @@ class Archer(object):
     def register_error_handler(self, exception, f):
         assert exception not in (Exception, BaseException), ValueError(
             "Please Register with `register_default_exc_handler`")
-        if exception in self.exception_handlers:
-            existing = self.exception_handlers[exception]
+        if exception in self.error_handlers:
+            existing = self.error_handlers[exception]
             raise KeyError("Handler (%s) already registered in %s" % (
                 exception, existing))
         self.error_handlers[exception] = f
@@ -204,7 +208,14 @@ class Archer(object):
     def test_client(self):
         return TestClient(self)
 
+    @property
+    def fake_client(self):
+        return FakeClient(self)
+
     def __getattr__(self, name):
         if name not in self.api_map:
-            raise AttributeError("Api {} not registered".format(name))
+            raise AttributeError(
+                '''app don't have `l{0}` attribute,
+                   is it an api? if you mean an api,
+                   this api `{0}` is not registered'''.format(name))
         return self.api_map[name]

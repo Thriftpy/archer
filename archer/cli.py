@@ -2,10 +2,13 @@
 
 
 import sys
+import traceback
 
 import click
+import re
 
 from ._compat import iteritems
+from .helper import make_temporary_client
 
 
 class NoAppException(click.UsageError):
@@ -111,3 +114,48 @@ def shell(config):
             IPython.embed(config=cfg, user_ns=ctx, banner1=banner)
         except ImportError:
             code.interact(banner=banner, local=ctx)
+
+
+@main.command('call', short_help='Runs a client')
+@click.option('--host', '-h', default='127.0.0.1',
+              help='The interface to bind to.')
+@click.option('--port', '-p', default=6000,
+              help='The port to bind to.')
+@click.option('--api', prompt=True)
+@click.option('--arguments', prompt=True)
+@pass_config
+def call(config, host, port, api, arguments):
+    """
+    call an api with given arguments, this is a command for quickly
+    testing if a api is working, it's better to write test case
+    warning: arguments of customized thrift type not supported yet
+    """
+    if ',' in arguments:
+        sep = '\s*,\s*'
+    else:
+        sep = '\s+'
+    args = re.split(sep, arguments.strip())
+    params = []
+    for arg in args:
+        if ':' in arg:
+            value, type_ = arg.split(':')
+
+            type_ = getattr(sys.modules['__builtin__'], type_)
+            value = type_(value)
+            params.append(value)
+        else:
+            try:
+                params.append(int(arg))
+            except ValueError:
+                params.append(arg)
+
+    click.echo('args: {}'.format(params))
+
+    app = locate_app(config.app)
+    client = make_temporary_client(app.service, host, port, timeout=10)
+    try:
+        result = getattr(client, api)(*params)
+        click.echo(result)
+    except Exception:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        click.echo(traceback.format_exc(exc_traceback))

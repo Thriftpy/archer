@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from functools import partial
 import sys
-from werkzeug.local import LocalStack, LocalProxy
+from .local import LocalStack, LocalProxy
 
 
 class AppContext(object):

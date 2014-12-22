@@ -10,3 +10,9 @@ service PingPong {
 
 
 }
+
+exception PingPongException {
+    1: required i32 error_code,
+    2: required string error_name,
+    3: optional string message,
+}
