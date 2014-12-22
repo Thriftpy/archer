@@ -11,7 +11,7 @@ def app():
         os.path.join(os.path.dirname(__file__), 'pingpong.thrift'),
         service='PingPong')
 
-    @app.api(SDF=123, sdfxcof=123123)
+    @app.api(name='mget', SDF=123, sdfxcof=123123)
     def mget(ids):
         if ids > 100:
             raise app.thrift_module.PingPongException(
@@ -22,7 +22,7 @@ def app():
     def ping():
         return 'pong'
 
-    @app.api
+    @app.api(name='query')
     def query(id):
         return 'id'
 

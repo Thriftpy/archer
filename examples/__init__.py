@@ -16,7 +16,7 @@ def get(id):
     return id + 2
 
 
-@app.api(SDF=123, sdfxcof=123123)
+@app.api(name='mget', SDF=123, sdfxcof=123123)
 def mget(ids):
     return u'you got it'
 
@@ -26,7 +26,7 @@ def ping():
     return 'pong'
 
 
-@app.api
+@app.api(name='query')
 def query(id):
     return 'id'
 
@@ -39,12 +39,12 @@ app.debug = True
 redis = Redis(app)
 
 
-@app.api
+@app.api('redis_get')
 def redis_get(k):
     return redis.get(k) + ' from app'
 
 
-@app.api
+@app.api('redis_set')
 def redis_set(k, v):
     return redis.set(k, v)
 

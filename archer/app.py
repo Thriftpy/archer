@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
+import copy
 
 import time
 import functools
@@ -84,8 +85,6 @@ class Archer(object):
         return AppContext(self)
 
     def make_config(self):
-        import copy
-
         return Config(self.root_path, copy.deepcopy(self.default_config))
 
     def make_shell_context(self):
@@ -143,12 +142,11 @@ class Archer(object):
         self.teardown_api_funcs.append(f)
         return f
 
-    def api(self, f=None, name=None, **kwargs):
-        if f is None:
-            return functools.partial(self.api, name=name, **kwargs)
-
-        self.register_api(name or f.__name__, f, kwargs)
-        return f
+    def api(self, name, **kwargs):
+        def on_decorate(func):
+            self.register_api(name, func, kwargs)
+            return func
+        return on_decorate
 
     def register_api(self, name, f, meta=None):
         if meta is None:

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-
+import os
 
 import sys
+import importlib
 import traceback
 
 import click
@@ -18,6 +19,8 @@ class NoAppException(click.UsageError):
 def locate_app(app_id):
     """Attempts to locate the application."""
 
+    if app_id is None:
+        return find_app_in_cwd()
     if ':' in app_id:
         module, app_obj = app_id.split(':', 1)
     else:
@@ -59,6 +62,27 @@ def find_best_app(module):
                          % module.__name__)
 
 
+def find_app_in_cwd():
+    # from examples import app
+    # return app
+    trial_modules = []
+    for f in os.listdir(os.getcwd()):
+        if f.endswith('.py') and f not in ('setup.py',):
+            trial_modules.append(importlib.import_module(f[:-3]))
+        if os.path.isdir(f):
+            # import pdb
+            # pdb.set_trace()
+            fs = os.listdir(f)
+            if '__init__.py' in fs:
+                trial_modules.append(importlib.import_module(f))
+    for module in trial_modules:
+        try:
+            return find_best_app(module)
+        except NoAppException:
+            continue
+    raise NoAppException
+
+
 class Config(object):
     def __init__(self):
         self.app = None
@@ -68,7 +92,7 @@ pass_config = click.make_pass_decorator(Config, ensure=True)
 
 
 @click.group()
-@click.option('--app', help='app to start')
+@click.option('--app', default=None)
 @pass_config
 def main(config, app):
     config.app = app
@@ -121,8 +145,8 @@ def shell(config):
               help='The interface to bind to.')
 @click.option('--port', '-p', default=6000,
               help='The port to bind to.')
-@click.option('--api', prompt=True)
-@click.option('--arguments', prompt=True)
+@click.argument('api')
+@click.argument('arguments', required=False, nargs=-1)
 @pass_config
 def call(config, host, port, api, arguments):
     """
@@ -130,6 +154,7 @@ def call(config, host, port, api, arguments):
     testing if a api is working, it's better to write test case
     warning: arguments of customized thrift type not supported yet
     """
+    arguments = ' '.join(arguments)
     if ',' in arguments:
         sep = '\s*,\s*'
     else:
