@@ -6,6 +6,7 @@ import copy
 import time
 import functools
 import thriftpy
+from thriftpy.parser import _BaseService
 from thriftpy.thrift import TProcessor
 
 from .config import ConfigAttribute
@@ -44,10 +45,15 @@ class Archer(object):
         'LOGGER_NAME': None,
     }
 
-    def __init__(self, name, thrift_file, service, root_path=None):
+    def __init__(self, name, thrift_file, service=None, root_path=None):
         thrift_module = thriftpy.load(thrift_file)
 
         self.thrift_file = thrift_file
+        if service is None:
+            for k, v in iteritems(thrift_module.__dict__):
+                if isinstance(v, type) and issubclass(v, _BaseService):
+                    service = k
+                    break
         self.service = getattr(thrift_module, service)
         self.name = name
         self.app = TProcessor(getattr(thrift_module, service), self)

@@ -5,10 +5,10 @@ from archer import Archer
 
 app = Archer('test_app',
              os.path.join(os.path.dirname(__file__), 'pingpong.thrift'),
-             service='PingPong')
+)
 app1 = Archer('test_app',
               os.path.join(os.path.dirname(__file__), 'pingpong.thrift'),
-              service='PingPong')
+)
 
 
 @app.api(name='get', api=None, ksadf=123)
