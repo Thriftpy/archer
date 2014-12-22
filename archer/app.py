@@ -150,7 +150,9 @@ class Archer(object):
         self.register_api(name or f.__name__, f, kwargs)
         return f
 
-    def register_api(self, name, f, meta):
+    def register_api(self, name, f, meta=None):
+        if meta is None:
+            meta = {}
         if name in self.api_map:
             raise KeyError("Api_name(%s) already registered in %s" % (
                 name, self.api_map[name].__module__
