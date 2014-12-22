@@ -12,7 +12,7 @@ from .config import ConfigAttribute
 from .event import before_api_call, after_api_call, tear_down_api_call
 from ._server import run_simple
 from .test import TestClient, FakeClient
-from ._compat import PY2
+from ._compat import PY2, iteritems
 from .config import Config
 from .ctx import current_app, AppContext, settings
 
@@ -146,6 +146,7 @@ class Archer(object):
         def on_decorate(func):
             self.register_api(name, func, kwargs)
             return func
+
         return on_decorate
 
     def register_api(self, name, f, meta=None):
@@ -182,7 +183,7 @@ class Archer(object):
                 ret_val = f(*args, **kwargs)
             except Exception as e:
                 result_meta = APIResultMeta(error=e)
-                for exc_type, handler in self.error_handlers.iteritems():
+                for exc_type, handler in iteritems(self.error_handlers):
                     if isinstance(e, exc_type):
                         return handler(api_meta, result_meta)
                 return self.handle_uncaught_exception(api_meta, result_meta)

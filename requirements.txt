@@ -1,6 +1,4 @@
-Werkzeug==0.9.6
 click==3.3
 ply==3.4
 redis==2.10.3
 thriftpy==0.1.15
-wsgiref==0.1.2
