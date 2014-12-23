@@ -182,6 +182,8 @@ class Archer(object):
     def wrap_api(self, name, f):
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
+            ctx = self.app_context()
+            ctx.push()
             api_meta = ApiMeta(self, name, f, args, kwargs)
             before_api_call.notify(api_meta)
             self.preprocess_api(api_meta)
@@ -201,6 +203,7 @@ class Archer(object):
             finally:
                 tear_down_api_call.notify(api_meta, result_meta)
                 self.tear_down_api(api_meta, result_meta)
+                ctx.pop()
 
         return wrapper
 

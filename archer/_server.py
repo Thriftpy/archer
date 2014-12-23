@@ -89,22 +89,21 @@ def _make_server(app, host, port, daemon=True):
 
 def run_simple(host, port, app, extra_files=None, interval=1,
                use_reloader=True):
-    with app.app_context():
-        signal.signal(signal.SIGTERM, lambda *args: sys.exit(0))
-        server = _make_server(app, host, port)
-        if not use_reloader:
-            log('info', 'server starting at {}:{}'.format(host, port))
-            server.serve()
+    signal.signal(signal.SIGTERM, lambda *args: sys.exit(0))
+    server = _make_server(app, host, port)
+    if not use_reloader:
+        log('info', 'server starting at {}:{}'.format(host, port))
+        server.serve()
 
-        if os.environ.get('archer.reload_loop') == 'true':
-            t = threading.Thread(target=server.serve, args=())
-            t.setDaemon(True)
-            t.start()
-            try:
-                reloader_loop(extra_files, interval)
-            except KeyboardInterrupt:
-                return
+    if os.environ.get('archer.reload_loop') == 'true':
+        t = threading.Thread(target=server.serve, args=())
+        t.setDaemon(True)
+        t.start()
         try:
-            sys.exit(restart_with_reloader(host, port))
+            reloader_loop(extra_files, interval)
         except KeyboardInterrupt:
-            pass
+            return
+    try:
+        sys.exit(restart_with_reloader(host, port))
+    except KeyboardInterrupt:
+        pass

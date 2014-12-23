@@ -6,12 +6,11 @@ class TestClient(object):
         self.app = app
 
     def __getattr__(self, item):
-        with self.app.app_context():
-            api = self.app.api_map.get(item)
-            if api is None:
-                raise ValueError(
-                    'app didn\'t registered this api: {}'.format(item))
-            return self.app.api_map.get(item)
+        api = self.app.api_map.get(item)
+        if api is None:
+            raise ValueError(
+                'app didn\'t registered this api: {}'.format(item))
+        return self.app.api_map.get(item)
 
 
 class FakeClient(TestClient):
@@ -23,9 +22,8 @@ class FakeClient(TestClient):
         self.app = app
 
     def __getattr__(self, item):
-        with self.app.app_context():
-            api = self.app.api_map.get(item)
-            if api is None:
-                raise ValueError(
-                    'app didn\'t registered this api: {}'.format(item))
-            return self.app.api_map.get(item).__wrapped__
+        api = self.app.api_map.get(item)
+        if api is None:
+            raise ValueError(
+                'app didn\'t registered this api: {}'.format(item))
+        return self.app.api_map.get(item).__wrapped__

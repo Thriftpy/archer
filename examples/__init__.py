@@ -3,12 +3,12 @@ import os
 
 from archer import Archer
 
-app = Archer('test_app',
+app = Archer('example_app',
              os.path.join(os.path.dirname(__file__), 'pingpong.thrift'),
 )
-app1 = Archer('test_app',
-              os.path.join(os.path.dirname(__file__), 'pingpong.thrift'),
-)
+# app1 = Archer('test_app',
+#               os.path.join(os.path.dirname(__file__), 'pingpong.thrift'),
+# )
 
 
 @app.api(name='get', api=None, ksadf=123)
@@ -32,11 +32,12 @@ def query(id):
 
 
 from archer.ext.archer_redis import Redis
+from archer.ext.archer_redis import redis_cli as redis
 
 app.testing = True
 app.debug = True
 
-redis = Redis(app)
+Redis(app)
 
 
 @app.api('redis_get')
