@@ -1,13 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-    mostly copy from  flask.config
-    ~~~~~~~~~~~~~~
-
-    Implements the configuration related objects.
-
-    :copyright: (c) 2014 by Armin Ronacher.
-    :license: BSD, see LICENSE for more details.
-"""
 
 import imp
 import os

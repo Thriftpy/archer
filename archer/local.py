@@ -1,20 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-    Just a copy of werkzeug.local
-    ~~~~~~~~~~~~~~
-
-    This module implements context-local objects.
-
-    :copyright: (c) 2014 by the Werkzeug Team, see AUTHORS for more details.
-    :license: BSD, see LICENSE for more details.
-"""
 from functools import update_wrapper
-from werkzeug.wsgi import ClosingIterator
-from werkzeug._compat import PY2, implements_bool
+from ._compat import PY2, implements_bool
 
-# since each thread has its own greenlet we can just use those as identifiers
-# for the context.  If greenlets are not available we fall back to the
-# current thread ident depending on where it is.
 try:
     from greenlet import getcurrent as get_ident
 except ImportError:
@@ -27,22 +14,6 @@ except ImportError:
 def release_local(local):
     """Releases the contents of the local for the current context.
     This makes it possible to use locals without a manager.
-
-    Example::
-
-        >>> loc = Local()
-        >>> loc.foo = 42
-        >>> release_local(loc)
-        >>> hasattr(loc, 'foo')
-        False
-
-    With this function one can release :class:`Local` objects as well
-    as :class:`LocalStack` objects.  However it is not possible to
-    release data held by proxies that way, one always has to retain
-    a reference to the underlying local object in order to be able
-    to release it.
-
-    .. versionadded:: 0.6.1
     """
     local.__release_local__()
 
@@ -88,28 +59,6 @@ class Local(object):
 class LocalStack(object):
     """This class works similar to a :class:`Local` but keeps a stack
     of objects instead.  This is best explained with an example::
-
-        >>> ls = LocalStack()
-        >>> ls.push(42)
-        >>> ls.top
-        42
-        >>> ls.push(23)
-        >>> ls.top
-        23
-        >>> ls.pop()
-        23
-        >>> ls.top
-        42
-
-    They can be force released by using a :class:`LocalManager` or with
-    the :func:`release_local` function but the correct way is to pop the
-    item from the stack after using.  When the stack is empty it will
-    no longer be bound to the current context (and as such released).
-
-    By calling the stack without arguments it returns a proxy that resolves to
-    the topmost item on the stack.
-
-    .. versionadded:: 0.6.1
     """
 
     def __init__(self):
@@ -120,8 +69,10 @@ class LocalStack(object):
 
     def _get__ident_func__(self):
         return self._local.__ident_func__
+
     def _set__ident_func__(self, value):
         object.__setattr__(self._local, '__ident_func__', value)
+
     __ident_func__ = property(_get__ident_func__, _set__ident_func__)
     del _get__ident_func__, _set__ident_func__
 
@@ -131,6 +82,7 @@ class LocalStack(object):
             if rv is None:
                 raise RuntimeError('object unbound')
             return rv
+
         return LocalProxy(_lookup)
 
     def push(self, obj):
@@ -166,22 +118,6 @@ class LocalStack(object):
 
 
 class LocalManager(object):
-    """Local objects cannot manage themselves. For that you need a local
-    manager.  You can pass a local manager multiple locals or add them later
-    by appending them to `manager.locals`.  Everytime the manager cleans up
-    it, will clean up all the data left in the locals for this context.
-
-    The `ident_func` parameter can be added to override the default ident
-    function for the wrapped locals.
-
-    .. versionchanged:: 0.6.1
-       Instead of a manager the :func:`release_local` function can be used
-       as well.
-
-    .. versionchanged:: 0.7
-       `ident_func` was added.
-    """
-
     def __init__(self, locals=None, ident_func=None):
         if locals is None:
             self.locals = []
@@ -216,28 +152,6 @@ class LocalManager(object):
         for local in self.locals:
             release_local(local)
 
-    def make_middleware(self, app):
-        """Wrap a WSGI application so that cleaning up happens after
-        request end.
-        """
-        def application(environ, start_response):
-            return ClosingIterator(app(environ, start_response), self.cleanup)
-        return application
-
-    def middleware(self, func):
-        """Like `make_middleware` but for decorating functions.
-
-        Example usage::
-
-            @manager.middleware
-            def application(environ, start_response):
-                ...
-
-        The difference to `make_middleware` is that the function passed
-        will have all the arguments copied from the inner application
-        (name, docstring, module).
-        """
-        return update_wrapper(self.make_middleware(func), func)
 
     def __repr__(self):
         return '<%s storages: %d>' % (
@@ -248,40 +162,6 @@ class LocalManager(object):
 
 @implements_bool
 class LocalProxy(object):
-    """Acts as a proxy for a werkzeug local.  Forwards all operations to
-    a proxied object.  The only operations not supported for forwarding
-    are right handed operands and any kind of assignment.
-
-    Example usage::
-
-        from werkzeug.local import Local
-        l = Local()
-
-        # these are proxies
-        request = l('request')
-        user = l('user')
-
-
-        from werkzeug.local import LocalStack
-        _response_local = LocalStack()
-
-        # this is a proxy
-        response = _response_local()
-
-    Whenever something is bound to l.user / l.request the proxy objects
-    will forward all operations.  If no object is bound a :exc:`RuntimeError`
-    will be raised.
-
-    To create proxies to :class:`Local` or :class:`LocalStack` objects,
-    call the object as shown above.  If you want to have a proxy to an
-    object looked up by a function, you can (as of Werkzeug 0.6.1) pass
-    a function to the :class:`LocalProxy` constructor::
-
-        session = LocalProxy(lambda: get_current_request().session)
-
-    .. versionchanged:: 0.6.1
-       The class can be instanciated with a callable as well now.
-    """
     __slots__ = ('__local', '__dict__', '__name__')
 
     def __init__(self, local, name=None):

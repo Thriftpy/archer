@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import redis
-from archer.ctx import _lookup_app_object, _app_ctx_stack, _app_ctx_err_msg, \
-    current_app
-from archer.event import before_api_call
+from archer.ctx import _app_ctx_stack, _app_ctx_err_msg, current_app
 from archer.local import LocalProxy
 
 
@@ -57,4 +55,3 @@ class Redis(object):
 
     def __getattr__(self, item):
         return getattr(self.client, item)
-

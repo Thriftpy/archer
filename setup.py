@@ -33,10 +33,6 @@ fname = os.path.join(os.path.dirname(__file__), 'requirements.txt')
 with open(fname) as f:
     REQUIREMENTS = list(map(lambda l: l.strip(), f.readlines()))
 
-
-
-
-
 py_modules = []
 
 for root, folders, files in os.walk('archer'):
@@ -46,7 +42,6 @@ for root, folders, files in os.walk('archer'):
             parts = full.split(os.path.sep)
             modname = '.'.join(parts)
             py_modules.append(modname)
-
 
 setup(
     name='archer',
@@ -61,7 +56,10 @@ setup(
     zip_safe=False,
     py_modules=py_modules,
     include_package_data=True,
-    install_requires=REQUIREMENTS,
+    install_requires=[
+        'click>=3.3',
+        'thriftpy>=0.1.15'
+    ],
     entry_points="""
     [console_scripts]
     archer=archer.cli:main

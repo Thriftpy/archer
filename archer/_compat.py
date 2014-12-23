@@ -20,6 +20,11 @@ if not PY2:
             raise value.with_traceback(tb)
         raise value
 
+    def implements_bool(cls):
+        cls.__nonzero__ = cls.__bool__
+        del cls.__bool__
+        return cls
+
     implements_to_string = _identity
 
 else:
@@ -30,6 +35,7 @@ else:
     iterkeys = lambda d: d.iterkeys()
     itervalues = lambda d: d.itervalues()
     iteritems = lambda d: d.iteritems()
+    implements_bool = _identity
 
     from cStringIO import StringIO
 
