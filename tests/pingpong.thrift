@@ -8,7 +8,6 @@ service PingPong {
     string fuck_api(),
     string query(1:string id)
 
-
 }
 
 exception PingPongException {

@@ -74,6 +74,7 @@ class Archer(object):
         self.extensions = {}
 
         self.error_handlers = {}
+        self.registered_errors = []
 
         self.api_map = {}
         self.api_meta_map = {}
@@ -134,7 +135,32 @@ class Archer(object):
             existing = self.error_handlers[exception]
             raise KeyError("Handler (%s) already registered in %s" % (
                 exception, existing))
+        self.registered_errors = self._append_error(exception)
         self.error_handlers[exception] = f
+
+    def _append_error(self, exception):
+        errors_cp = copy.copy(self.registered_errors)
+        new_errors = []
+        found = -1
+        for i, error in enumerate(errors_cp):
+            if issubclass(error, exception):
+                new_errors.extend(errors_cp[0:i + 1])
+                found = i
+                break
+        if found == -1:
+            errors_cp.insert(0, exception)
+            return errors_cp
+
+        left_errors = errors_cp[found + 1:]
+        for i, error in enumerate(left_errors):
+            if issubclass(exception, error):
+                new_errors.extend(left_errors[0:i])
+                new_errors.append(exception)
+                new_errors.extend(left_errors[i:])
+                return new_errors
+        errors_cp.append(exception)
+        return errors_cp
+
 
     def before_api_call(self, f):
         self.before_api_call_funcs.append(f)
@@ -191,7 +217,8 @@ class Archer(object):
                 ret_val = f(*args, **kwargs)
             except Exception as e:
                 result_meta = APIResultMeta(error=e)
-                for exc_type, handler in iteritems(self.error_handlers):
+                for exc_type in self.registered_errors:
+                    handler = self.error_handlers[exc_type]
                     if isinstance(e, exc_type):
                         return handler(api_meta, result_meta)
                 return self.handle_uncaught_exception(api_meta, result_meta)
