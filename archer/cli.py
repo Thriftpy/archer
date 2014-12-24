@@ -118,26 +118,25 @@ def shell(config):
     import code
 
     app = locate_app(config.app)
-    with app.app_context():
-        banner = 'Python %s on %s\nApp: %s%s\n' % (
-            sys.version,
-            sys.platform,
-            app.name,
-            app.debug and ' [debug]' or '',
-        )
-        ctx = {'a': 123}
+    banner = 'Python %s on %s\nApp: %s%s\n' % (
+        sys.version,
+        sys.platform,
+        app.name,
+        app.debug and ' [debug]' or '',
+    )
+    ctx = {'a': 123}
 
-        ctx.update(app.make_shell_context())
+    ctx.update(app.make_shell_context())
 
-        sys.path.append('.')
-        try:
-            import IPython
-            from IPython.config.loader import Config
+    sys.path.append('.')
+    try:
+        import IPython
+        from IPython.config.loader import Config
 
-            cfg = Config()
-            IPython.embed(config=cfg, user_ns=ctx, banner1=banner)
-        except ImportError:
-            code.interact(banner=banner, local=ctx)
+        cfg = Config()
+        IPython.embed(config=cfg, user_ns=ctx, banner1=banner)
+    except ImportError:
+        code.interact(banner=banner, local=ctx)
 
 
 @main.command('call', short_help='Runs a client')

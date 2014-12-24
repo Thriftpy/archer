@@ -2,9 +2,9 @@
 import logging
 import os
 import copy
-
 import time
 import functools
+
 import thriftpy
 from thriftpy.parser import _BaseService
 from thriftpy.thrift import TProcessor
@@ -15,17 +15,24 @@ from ._server import run_simple
 from .test import TestClient, FakeClient
 from ._compat import PY2, iteritems
 from .config import Config
-from .ctx import current_app, AppContext, settings
 
 
 class ApiMeta(object):
     def __init__(self, app, name, f, args, kwargs):
+        """
+        meta object represent related info for an api
+        :param app:  the archer app instance
+        :param name: name of the api
+        :param f:    function instance of the api
+        :param args:  positional arguments
+        :param kwargs:  keyword arguments
+        :return:
+        """
         self.app = app
         self.name = name
         self.f = f
         self.args = args
         self.kwargs = kwargs
-        self.start_time = time.time()
 
 
 class APIResultMeta(object):
@@ -88,8 +95,6 @@ class Archer(object):
         run_simple(host, port, self, extra_files=[self.thrift_file],
                    use_reloader=use_reloader, **options)
 
-    def app_context(self):
-        return AppContext(self)
 
     def make_config(self):
         return Config(self.root_path, copy.deepcopy(self.default_config))
@@ -104,8 +109,7 @@ class Archer(object):
         rv = {'app': self,
               'test_client': self.test_client,
               'fake_client': self.fake_client,
-              'current_app': current_app,
-              'settings': settings}
+        }
         for processor in self.shell_context_processors:
             rv.update(processor())
         return rv
@@ -208,8 +212,6 @@ class Archer(object):
     def wrap_api(self, name, f):
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
-            ctx = self.app_context()
-            ctx.push()
             api_meta = ApiMeta(self, name, f, args, kwargs)
             before_api_call.notify(api_meta)
             self.preprocess_api(api_meta)
@@ -230,7 +232,6 @@ class Archer(object):
             finally:
                 tear_down_api_call.notify(api_meta, result_meta)
                 self.tear_down_api(api_meta, result_meta)
-                ctx.pop()
 
         return wrapper
 

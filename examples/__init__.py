@@ -2,13 +2,13 @@
 import os
 
 from archer import Archer
+import redis
+
+redis = redis.StrictRedis()
 
 app = Archer('example_app',
              os.path.join(os.path.dirname(__file__), 'pingpong.thrift'),
 )
-# app1 = Archer('test_app',
-#               os.path.join(os.path.dirname(__file__), 'pingpong.thrift'),
-# )
 
 
 @app.api(name='get', api=None, ksadf=123)
@@ -29,15 +29,6 @@ def ping():
 @app.api(name='query')
 def query(id):
     return 'id'
-
-
-from archer.ext.archer_redis import Redis
-from archer.ext.archer_redis import redis_cli as redis
-
-app.testing = True
-app.debug = True
-
-Redis(app)
 
 
 @app.api('redis_get')
