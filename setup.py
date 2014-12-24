@@ -1,10 +1,55 @@
 # -*- coding: utf-8 -
 
+"""
+Archer
+-----
+
+Archer is a micro rpc framework inspired by Flask based on thrift
+````````````
+
+Save in a hello.py:
+
+.. code:: python
+
+    from archer import Archer
+    app = Archer(__name__)
+
+    @app.api('ping')
+    def ping():
+        return 'pong'
+
+    if __name__ == "__main__":
+        app.run()
+
+
+Save in a hello.thrift::
+
+    service PingPong {
+        string ping(),
+    }
+
+
+And Easy to Setup
+`````````````````
+
+And run it:
+
+.. code:: bash
+
+    $ pip install Archer
+    $ python hello.py
+    * Running on 127.0.0.1:6000/
+
+Links
+`````
+
+* `documentation <http://archer-thrift.readthedocs.org/en/latest/index.html>`_
+
+"""
+
 import os
-import sys
 
 from setuptools import setup
-from setuptools.command.test import test as TestCommand
 
 from archer import __version__
 
@@ -25,9 +70,6 @@ CLASSIFIERS = [
     'Topic :: Software Development :: Libraries :: Python Modules',
 ]
 
-
-# read dev requirements
-
 fname = os.path.join(os.path.dirname(__file__), 'requirements.txt')
 
 with open(fname) as f:
@@ -47,7 +89,8 @@ setup(
     name='archer',
     version=__version__,
 
-    description='Thrift app flaskable ',
+    url='http://github.com/eleme/archer/',
+    description='Thrift app the flask way',
     author='Wang Haowei',
     author_email='hwwangwang@gmail.com',
     license='MIT',
