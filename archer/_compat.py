@@ -13,19 +13,6 @@ if not PY2:
     itervalues = lambda d: iter(d.values())
     iteritems = lambda d: iter(d.items())
 
-    from io import StringIO
-
-    def reraise(tp, value, tb=None):
-        if value.__traceback__ is not tb:
-            raise value.with_traceback(tb)
-        raise value
-
-    def implements_bool(cls):
-        cls.__nonzero__ = cls.__bool__
-        del cls.__bool__
-        return cls
-
-    implements_to_string = _identity
 
 else:
     text_type = unicode
@@ -35,12 +22,6 @@ else:
     iterkeys = lambda d: d.iterkeys()
     itervalues = lambda d: d.itervalues()
     iteritems = lambda d: d.iteritems()
-    implements_bool = _identity
-
-    from cStringIO import StringIO
 
 
-    def implements_to_string(cls):
-        cls.__unicode__ = cls.__str__
-        cls.__str__ = lambda x: x.__unicode__().encode('utf-8')
-        return cls
+

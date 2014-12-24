@@ -9,7 +9,7 @@ def app():
     app = Archer(
         'pingpong',
         os.path.join(os.path.dirname(__file__), 'pingpong.thrift'),
-        service='PingPong')
+        service_name='PingPong')
 
     @app.api(name='mget', SDF=123, sdfxcof=123123)
     def mget(ids):

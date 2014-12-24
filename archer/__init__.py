@@ -8,5 +8,4 @@ from .event import before_api_call, tear_down_api_call, after_api_call
 
 from .test import TestClient
 
-
-from .helper import make_temporary_client
+from .helper import make_client

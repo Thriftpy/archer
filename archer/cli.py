@@ -9,7 +9,7 @@ import click
 import re
 
 from ._compat import iteritems
-from .helper import make_temporary_client
+from .helper import make_client
 
 
 class NoAppException(click.UsageError):
@@ -44,7 +44,7 @@ def find_best_app(module):
     """Given a module instance this tries to find the best possible
     application in the module or raises an exception.
     """
-    from . import Archer
+    from .app import Archer
 
     for attr_name in 'app', 'application':
         app = getattr(module, attr_name, None)
@@ -115,8 +115,6 @@ def run(config, host, port, reload):
 @main.command('shell', short_help='Runs a shell in the app context.')
 @pass_config
 def shell(config):
-    import code
-
     app = locate_app(config.app)
     banner = 'Python %s on %s\nApp: %s%s\n' % (
         sys.version,
@@ -131,11 +129,11 @@ def shell(config):
     sys.path.append('.')
     try:
         import IPython
-        from IPython.config.loader import Config
 
-        cfg = Config()
-        IPython.embed(config=cfg, user_ns=ctx, banner1=banner)
+        IPython.embed(user_ns=ctx, banner1=banner)
     except ImportError:
+        import code
+
         code.interact(banner=banner, local=ctx)
 
 
@@ -173,13 +171,14 @@ def call(config, host, port, api, arguments):
             except ValueError:
                 params.append(arg)
 
-    click.echo('args: {}'.format(params))
-
     app = locate_app(config.app)
-    client = make_temporary_client(app.service, host, port, timeout=10)
+    client = make_client(app.service, host, port, timeout=10)
     try:
         result = getattr(client, api)(*params)
-        click.echo(result)
+        if result:
+            click.echo(result)
+        else:
+            click.echo('OK')
     except Exception:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         click.echo(traceback.format_exc(exc_traceback))

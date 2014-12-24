@@ -2,6 +2,11 @@
 
 
 class TestClient(object):
+    """
+    fake_client will call the wrapped api function,
+    going through all middlewares
+    """
+
     def __init__(self, app):
         self.app = app
 
@@ -15,7 +20,8 @@ class TestClient(object):
 
 class FakeClient(TestClient):
     """
-    call the original api function directly, bypass all middlewares
+    fake_client will call the original api function directly,
+     bypass all middlewares
     """
 
     def __init__(self, app):

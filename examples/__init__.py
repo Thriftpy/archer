@@ -6,9 +6,7 @@ import redis
 
 redis = redis.StrictRedis()
 
-app = Archer('example_app',
-             os.path.join(os.path.dirname(__file__), 'pingpong.thrift'),
-)
+app = Archer('example_app')
 
 
 @app.api(name='get', api=None, ksadf=123)
