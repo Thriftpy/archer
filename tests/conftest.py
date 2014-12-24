@@ -26,8 +26,5 @@ def app():
     def query(id):
         return 'id'
 
-    @app.api(name='fuck_api', shield=True)
-    def fuck():
-        return 'fuck??'
 
     return app

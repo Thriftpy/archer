@@ -1,22 +1,13 @@
 # -*- coding: utf-8 -*-
-import os
 
 from archer import Archer
-import redis
-
-redis = redis.StrictRedis()
 
 app = Archer('example_app')
 
 
-@app.api(name='get', api=None, ksadf=123)
-def get(id):
-    return id + 2
-
-
 @app.api(name='mget', SDF=123, sdfxcof=123123)
 def mget(ids):
-    return u'you got it'
+    return 'mget %s' % ids
 
 
 @app.api(name='ping')
@@ -29,24 +20,22 @@ def query(id):
     return 'id'
 
 
-@app.api('redis_get')
-def redis_get(k):
-    return redis.get(k) + ' from app'
+cache = {}
 
 
-@app.api('redis_set')
-def redis_set(k, v):
-    return redis.set(k, v)
+@app.api(name='set_v')
+def set_v(k, v):
+    cache[k] = v
 
 
-@app.api(name='fuck_api', shield=True)
-def fuck():
-    return 'fuck??'
+@app.api(name='get', api=None, ksadf=123)
+def get(k):
+    return cache.get('k', 'not found')
 
 
 @app.shell_context_processor
 def redis_ctx():
-    return {'redis': redis}
+    return {'redis': 'redis'}
 
 
 if __name__ == '__main__':

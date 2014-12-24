@@ -20,8 +20,7 @@ def restart_with_reloader(host, port):
     """Spawn a new Python interpreter with the same arguments as this one,
     but running the reloader thread.
     """
-    log('info', 'starting server at {}:{} in debug mode'.format(host, port))
-
+    log('info', 'Running on {}:{} in DEBUG mode'.format(host, port))
     while True:
         args = [sys.executable] + sys.argv
         new_environ = os.environ.copy()
