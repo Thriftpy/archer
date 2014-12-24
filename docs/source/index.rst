@@ -3,9 +3,8 @@
 Welcome to Archer
 =================
 
-.. image:: _static/logo-full.png
-   :alt: Archer: develop thrift rpc application the flask way
-   :class: floatingarcher
+Archer: develop thrift rpc application the flask way
+----------------------------------------------------
 
 Welcome to Archer's documentation.  This documentation is divided into
 different parts.  I recommend that you get started with

@@ -22,11 +22,13 @@ class ApiMeta(object):
     def __init__(self, app, name, f, args, kwargs):
         """
         meta object represent related info for an api
+
         :param app:  the archer app instance
         :param name: name of the api
         :param f:    function instance of the api
         :param args:  positional arguments
         :param kwargs:  keyword arguments
+
         """
         self.app = app
         self.name = name
@@ -39,8 +41,10 @@ class ApiMeta(object):
 class ApiResultMeta(object):
     def __init__(self, result=None, error=None):
         """
+
         :param result: return value of api, if exception occurred, set None
         :param error: the exception instance raised in the api if any
+
         """
         self.result = result
         self.error = error
@@ -60,15 +64,16 @@ class Archer(object):
     def __init__(self, name, thrift_file=None, service_name=None, root_path=None):
         """
         initialize an archer application
+
         :param name:  app name
-        :param thrift_file:  the thrift file to load by thriftpy,
-        if not set ,archer will automatically find a .thrift file
-        under root path
-        :param service: service name of the thrift app,
-        if not set, archer will automatically find a service
-        in the dynamically loaded thrift_module
-        :param root_path:  root path for file searching, default is
-        pwd
+        :param thrift_file:  the thrift file to load by thriftpy, if not set
+                             ,archer will automatically find a .thrift file
+                             under root path
+        :param service: service name of the thrift app, if not set, archer
+                        will automatically find a service in the dynamically
+                        loaded thrift_module
+        :param root_path:  root path for file searching, default is pwd
+
         """
         self.root_path = root_path or os.getcwd()
 
@@ -127,6 +132,7 @@ class Archer(object):
         """Returns the shell context for an interactive shell for this
         application.  This runs all the registered shell context
         processors.
+
         """
         rv = {'app': self,
               'test_client': self.test_client,
@@ -141,8 +147,7 @@ class Archer(object):
         A processor function is just a function that takes
         no arguments and return a dict object, which contains
         attributes that would be loaded in to the interactive shell
-        e.g.
-            .. code-block:: python
+        e.g.::
 
             app = Archer(__name__)
             @app.shell_context_processor
@@ -169,6 +174,7 @@ class Archer(object):
     def register_error_handler(self, error_type, f):
         """
         register an error_type on a given api function
+
         """
         assert error_type not in (Exception, BaseException), ValueError(
             "Please Register with `register_default_exc_handler`")
@@ -183,6 +189,7 @@ class Archer(object):
         """
         append an exception_type to registered error types,
         ensure that the order is based on class's __mro__ hierarchy
+
         """
         registered_errors = self.registered_errors
         error_builder = []
@@ -212,6 +219,7 @@ class Archer(object):
         an api function is called,
         the function would take one argument, which is an instance
         of `ApiMeta`
+
         """
         self.before_api_call_funcs.append(f)
         return f
@@ -221,8 +229,9 @@ class Archer(object):
         register a function which would  be called after
         an api function is executed successfully
         the function would take one two arguments, the first one is
-         an instance of `ApiMeta` and the second one is an instance
-         of `ApiResultMeta`, same for `tear_down_api_cal`
+        an instance of `ApiMeta` and the second one is an instance
+        of `ApiResultMeta`, same for `tear_down_api_cal`
+
         """
         self.after_api_call_funcs.append(f)
         return f
@@ -232,6 +241,7 @@ class Archer(object):
         register a function which would always be called after
         an api is executed, no matter whether it returns normally or raise
         some error
+
         """
         self.teardown_api_funcs.append(f)
         return f
@@ -239,9 +249,11 @@ class Archer(object):
     def api(self, name, **meta):
         """
         decorator used to register a thrift rpc api
+
         :param name:    api name
         :param meta: meta attributes would add to the app's api_meta_map
         :return: the original api function
+
         """
 
         def on_decorate(func):
@@ -308,6 +320,7 @@ class Archer(object):
         delegate the processor method to the thrift service instance,
         make an Archer app compatible with the `gunicorn_thrift`
         definition for a thrift app
+
         """
         return self.app.processor(iprot, oprot)
 
@@ -338,6 +351,7 @@ class Archer(object):
         :param silent: set to ``True`` if you want silent failure for missing
                        files.
         :return: bool. ``True`` if able to load config, ``False`` otherwise.
+
         """
         rv = os.environ.get(variable_name)
         if not rv:
@@ -372,6 +386,7 @@ class Archer(object):
         package because the package might be installed system wide.
 
         :param obj: an import name or object
+
         """
         if isinstance(obj, string_types):
             obj = import_string(obj)
@@ -389,7 +404,7 @@ class Archer(object):
                          root path.
         :param silent: set to ``True`` if you want silent failure for missing
                        files.
-           `silent` parameter.
+
         """
         filename = os.path.join(self.root_path, filename)
         d = imp.new_module('config')

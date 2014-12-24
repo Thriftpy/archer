@@ -1,1 +1,6 @@
-.. include:: ../CHANGES
+changes
+=======
+
+changes
+-------
+.. include:: ../../CHANGES

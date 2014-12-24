@@ -11,15 +11,15 @@ instructions for web development with Archer.
    foreword
    installation
    quickstart
-   tutorial/index
+   tutorial
    testing
    errorhandling
    event
    cli
    server
    shell
-   patterns/index
-   deploying/index
+   patterns
+   deploying
 
 API Reference
 -------------
