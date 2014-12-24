@@ -3,6 +3,3 @@
 foreword
 ========
 
-
-foreword
---------
