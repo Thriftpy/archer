@@ -1,7 +1,7 @@
 .. _deploying:
 
-deploying
-=========
+deployment
+==========
 
-deploying
----------
+deployment
+----------

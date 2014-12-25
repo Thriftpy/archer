@@ -1,7 +1,7 @@
 .. _design:
 
 Design Decisions in Archer
-=========================
+==========================
 
 If you are curious why Archer does certain things the way it does and not
 differently, this section is for you.  This should give you an idea about
@@ -31,8 +31,8 @@ things (:ref:`app-factories`).
 Thread Locals
 -------------
 
-Unlike flask, Archer doesn't use thread local objects, no magic globals
-like `current_app`,  `request` in flask.
+Unlike Flask, Archer doesn't use thread local objects, no magic globals
+like `current_app`,  `request` in Flask.
 We believe that things you can do with thread locals would exist a
 better way to do without it, and decouple your code with these globals
 means it would be easier to test and analyse, try to fire up a python
@@ -50,7 +50,7 @@ be used in an archer app, for more information , refer to the article `GlobalSta
 
 
 What Archer is, What Archer is Not
---------------------------------
+----------------------------------
 
 
 Archer will never have a database layer.  It will not have a form library
@@ -59,9 +59,14 @@ to implement a proper thrift application.
 It also binds to a few common standard library packages such as logging.
 Everything else is up for extensions.
 
+Archer almost does nothing on the client side , as the client language
+is depend on what you prefer, and how to use the connection is also
+not predictable. So just implement the client side code the way you like
+or just whatever to satisfy your need.
+
 Why is this the case?  Because people have different preferences and
 requirements and Archer could not meet those if it would force any of this
 into the core.
 
 The idea of Archer is to build a good foundation for all thrift applications.
-Everything else is up to you or extensions.
+Everything else is up to you.

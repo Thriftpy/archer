@@ -29,7 +29,7 @@ shell access to your production machines, you'll probably want to use it there,
 too.
 
 What problem does virtualenv solve?  If you like Python as much as I do,
-chances are you want to use it for other projects besides Flask-based web
+chances are you want to use it for other projects besides Archer-based RPC
 applications.  But the more projects you have, the more likely it is that you
 will be working with different versions of Python itself, or at least different
 versions of Python libraries.  Let's face it: quite often libraries break
@@ -87,9 +87,9 @@ And if you want to go back to the real world, use the following command::
 
     $ deactivate
 
-After doing this, the prompt of your shell should be as familar as before.
+After doing this, the prompt of your shell should be as familiar as before.
 
-Now, let's move on. Enter the following command to get Flask activated in your
+Now, let's move on. Enter the following command to get Archer activated in your
 virtualenv::
 
     $ pip install Archer
@@ -132,47 +132,3 @@ Get the git checkout in a new virtualenv and run in development mode::
 This will pull in the dependencies and activate the git head as the current
 version inside the virtualenv.  Then all you have to do is run ``git pull
 origin`` to update to the latest version.
-
-
-.. _windows-easy-install:
-
-`pip` and `setuptools` on Windows
----------------------------------
-
-Sometimes getting the standard "Python packaging tools" like *pip*, *setuptools*
-and *virtualenv* can be a little trickier, but nothing very hard. The two crucial
-packages you will need are setuptools and pip - these will let you install
-anything else (like virtualenv). Fortunately there are two "bootstrap scripts"
-you can run to install either.
-
-If you don't currently have either, then `get-pip.py` will install both for you
-(you won't need to run ez_setup.py).
-
-`get-pip.py`_
-
-To install the latest setuptools, you can use its bootstrap file:
-
-`ez_setup.py`_
-
-Either should be double-clickable once you download them. If you already have pip,
-you can upgrade them by running::
-
-    > pip install --upgrade pip setuptools
-
-Most often, once you pull up a command prompt you want to be able to type :command:`pip`
-and :command:`python` which will run those things, but this might not automatically happen
-on Windows, because it doesn't know where those executables are (give either a try!).
-
-To fix this, you should be able to navigate to your Python install directory
-(e.g :file:`C:\Python27`), then go to :file:`Tools`, then :file:`Scripts`; then find the
-:file:`win_add2path.py` file and run that. Open a **new** Command Prompt and
-check that you can now just type :command:`python` to bring up the interpreter.
-
-Finally, to install `virtualenv`_, you can simply run::
-
-    > pip install virtualenv
-
-Then you can be off on your way following the installation instructions above.
-
-.. _get-pip.py: https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py
-.. _ez_setup.py: https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
