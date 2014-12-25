@@ -28,7 +28,3 @@ development procedure more fluently.
 
 .. _Thriftpy: https://github.com/eleme/thriftpy/
 
-
-
-
-

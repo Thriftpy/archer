@@ -13,12 +13,15 @@ important right here and provide links to the canonical documentation.
 Application Object
 ------------------
 
+
 .. autoclass:: Archer
    :members:
-   :inherited-members:
 
    .. automethod:: __init__
 
+   .. attribute:: root_path
+
+   .. attribute:: thrift_file
 
 
 
@@ -85,7 +88,7 @@ ApiResultMeta
 Test Client
 -----------
 
-.. currentmodule:: archer.test
+.. module:: archer.test
 
 .. autoclass:: TestClient
    :members:
@@ -98,13 +101,17 @@ Fake Client
 .. autoclass:: FakeClient
    :members:
 
-
 .. _command_line_interface:
 
 Command Line Interface
 ----------------------
 
-.. automodule:: archer.cli
-   :members:
-   :undoc-members:
+.. module:: archer.cli
+
+.. data:: call
+
+.. data:: shell
+
+.. data:: run
+
 
