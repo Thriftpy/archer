@@ -27,9 +27,12 @@ Save in a hello.thrift::
         string ping(),
     }
 
+Archer would find the thrift file for you, and relying on ``Thriftpy`` to
+generate code on the fly.
 
 And Easy to Setup
 `````````````````
+
 
 And run it:
 

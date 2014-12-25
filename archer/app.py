@@ -157,6 +157,9 @@ class Archer(object):
                     'redis': redis.StrictRedis()
                 }
 
+        .. versionadded:: 0.0.1
+           context
+
         """
         self.shell_context_processors.append(f)
         return f
@@ -188,7 +191,7 @@ class Archer(object):
     def _append_error(self, exception):
         """
         append an exception_type to registered error types,
-        ensure that the order is based on class's __mro__ hierarchy
+        ensure that the order is based on class's ``__mro__`` hierarchy
 
         """
         registered_errors = self.registered_errors
@@ -218,7 +221,7 @@ class Archer(object):
         register a function which would always be called before
         an api function is called,
         the function would take one argument, which is an instance
-        of `ApiMeta`
+        of :class:`~archer.app.ApiMeta`
 
         """
         self.before_api_call_funcs.append(f)
@@ -229,8 +232,8 @@ class Archer(object):
         register a function which would  be called after
         an api function is executed successfully
         the function would take one two arguments, the first one is
-        an instance of `ApiMeta` and the second one is an instance
-        of `ApiResultMeta`, same for `tear_down_api_cal`
+        an instance of :class:`ApiMeta` and the second one is an instance
+        of :class:`~archer.app.ApiResultMeta`, same for :meth:`tear_down_api_call`.
 
         """
         self.after_api_call_funcs.append(f)
@@ -318,18 +321,26 @@ class Archer(object):
     def processor(self, iprot, oprot):
         """
         delegate the processor method to the thrift service instance,
-        make an Archer app compatible with the `gunicorn_thrift`
-        definition for a thrift app
-
+        which is a :class:`thriftpy.thrift.TProcessor` object
+        make an Archer app compatible with the thrift_app
+        definition in `gunicorn_thrift <http://github.com/eleme/gunicorn_thrift>`_
         """
         return self.app.processor(iprot, oprot)
 
     @property
     def test_client(self):
+        """
+        :return: an :class:`~archer.test.TestClient` instance
+
+        """
         return TestClient(self)
 
     @property
     def fake_client(self):
+        """
+        :return: an :class:`~archer.test.FakeClient` instance
+
+        """
         return FakeClient(self)
 
     def __getattr__(self, name):
