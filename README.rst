@@ -28,7 +28,8 @@ Save in a hello.thrift::
     }
 
 Archer would find the thrift file for you, and relying on ``Thriftpy`` to
-generate code on the fly.
+generate code on the fly, and you don't need to specify the serivce name(here is
+``PingPong`` in code as well.
 
 And Easy to Setup
 `````````````````
