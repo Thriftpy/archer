@@ -23,6 +23,35 @@ Application Object
 
    .. attribute:: thrift_file
 
+   .. attribute:: thrift_module
+
+   .. attribute:: service
+
+   .. attribute:: name
+
+   .. attribute:: app
+
+   .. attribute:: default_error_handler
+
+   .. attribute:: before_api_call_funcs
+
+   .. attribute:: after_api_call_funcs
+
+   .. attribute:: tear_down_api_funcs
+
+   .. attribute:: error_handlers
+
+   .. attribute:: registered_errors
+
+   .. attribute:: api_map
+
+   .. attribute:: api_meta_map
+
+   .. attribute:: shell_context_processors
+
+   .. attribute:: config
+
+   .. attribute:: logger
 
 
 ApiMeta Object

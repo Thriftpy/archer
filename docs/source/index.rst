@@ -14,8 +14,7 @@ different parts.  I recommend that you get started with
 Besides the quickstart, there is also a more detailed :ref:`tutorial` that
 shows how to create a complete (albeit small) application with Archer.  If
 you'd rather dive into the internals of Archer, check out
-the :ref:`api` documentation.  Common patterns are described in the
-:ref:`patterns` section.
+the :ref:`api` documentation.
 
 Archer depends on two external libraries: the `Thriftpy`_ interpreter
 engine and the `Click`_ cli parser.  These libraries are not documented

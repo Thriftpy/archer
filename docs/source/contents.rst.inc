@@ -16,9 +16,7 @@ instructions for web development with Archer.
    errorhandling
    event
    cli
-   server
    shell
-   patterns
    deploying
 
 API Reference

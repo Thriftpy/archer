@@ -1,5 +1,7 @@
-lisence
+licence
 =======
 
-authors
+
+licence
 -------
+.. include:: ../../LICENSE

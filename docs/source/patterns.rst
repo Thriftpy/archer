@@ -1,7 +1,0 @@
-.. _patterns:
-
-patterns
-========
-
-patterns
---------
