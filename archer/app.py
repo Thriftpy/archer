@@ -188,33 +188,24 @@ class Archer(object):
         self._append_error(error_type)
         self.error_handlers[error_type] = f
 
-    def _append_error(self, exception):
+    def _append_error(self, new_exc):
         """
         append an exception_type to registered error types,
         ensure that the order is based on class's ``__mro__`` hierarchy
 
         """
         registered_errors = self.registered_errors
-        error_builder = []
-        found = -1
-        for i, error in enumerate(registered_errors):
-            if issubclass(error, exception):
-                error_builder.extend(registered_errors[0:i + 1])
-                found = i
-                break
-        if found == -1:
-            registered_errors.insert(0, exception)
-            return
 
-        tailed_errors = registered_errors[found + 1:]
-        for i, error in enumerate(tailed_errors):
-            if issubclass(exception, error):
-                error_builder.extend(tailed_errors[0:i])
-                error_builder.append(exception)
-                error_builder.extend(tailed_errors[i:])
-                self.registered_errors = error_builder
-                return
-        registered_errors.append(exception)
+        for i, exc in enumerate(registered_errors):
+            if new_exc is exc:
+                registered_errors[i] = new_exc
+                break
+            elif issubclass(new_exc, exc):
+                registered_errors.insert(i, new_exc)
+                break
+        else:
+            registered_errors.append(new_exc)
+
 
     def before_api_call(self, f):
         """
