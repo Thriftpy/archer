@@ -311,10 +311,10 @@ class Archer(object):
 
     def processor(self, iprot, oprot):
         """
-        delegate the processor method to the thrift service instance,
-        which is a :class:`thriftpy.thrift.TProcessor` object
-        make an Archer app compatible with the thrift_app
-        definition in `gunicorn_thrift <http://github.com/eleme/gunicorn_thrift>`_
+        delegate the processor method to the `app` attribute,
+        which is an instance of :class:`thriftpy.thrift.TProcessor`.
+        Make an Archer app compatible with the thrift_app definition in
+        `gunicorn_thrift <http://github.com/eleme/gunicorn_thrift>`_
         """
         return self.app.processor(iprot, oprot)
 
