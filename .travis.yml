@@ -4,7 +4,9 @@ python:
   - "3.2"
   - "3.3"
   - "3.4"
-# command to install dependencies
-install: "pip install -r requirements.txt"
-# command to run tests
-script: PYTHONPATH=''; py.test
+install:
+  - "pip install -r requirements.txt"
+
+script:
+  - "python setup.py develop"
+  - "PYTHONPATH=''; py.test"
