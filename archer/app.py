@@ -157,7 +157,7 @@ class Archer(object):
                     'redis': redis.StrictRedis()
                 }
 
-        .. versionadded:: 0.0.1
+        .. versionadded:: 0.1
            context
 
         """
