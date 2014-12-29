@@ -1,6 +1,8 @@
 Archer
 ------
 
+[![Build Status](https://travis-ci.org/eleme/archer.svg?branch=master)](https://travis-ci.org/eleme/archer)
+
 Archer is a micro RPC framework inspired by `Flask` based on `Thrift`.
 
 Archer is super easy to use
