@@ -1,7 +1,7 @@
 Archer
 ------
 
-Archer is a micro rpc framework inspired by Flask based on thrift
+Archer is a micro RPC framework inspired by `Flask` based on `Thrift`.
 
 Archer is super easy to use
 ```````````````````````````
@@ -17,9 +17,6 @@ Save in a hello.py:
    def ping():
        return 'pong'
 
-   if __name__ == "__main__":
-       app.run()
-
 
 Save in a hello.thrift::
 
@@ -27,9 +24,9 @@ Save in a hello.thrift::
         string ping(),
     }
 
-Archer would find the thrift file for you, and relying on ``Thriftpy`` to
-generate code on the fly, and you don't need to specify the serivce name(here is
-``PingPong`` in code as well.
+Archer would find the thrift file for you, and relying on `Thriftpy <https://thriftpy.readthedocs.org/en/latest/>`_
+to generate code on the fly, and you don't need to specify the service name(here is
+``PingPong``) in code as well.
 
 And Easy to Setup
 `````````````````
@@ -40,8 +37,24 @@ And run it:
 .. code:: bash
 
    $ pip install Archer
-   $ python hello.py
+   $ archer run
    * Running on 127.0.0.1:6000/
+
+Archer would find the app instance to start a dev server, and reload it
+when detecting changes on your python or thrift file.
+
+Quick to get some feedback
+``````````````````````````
+
+Just run the command
+
+.. code:: bash
+
+   $ archer call ping
+
+   * pong
+
+Pretty cool, eh!
 
 Links
 `````
