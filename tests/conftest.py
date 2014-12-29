@@ -16,7 +16,7 @@ def app():
         if ids > 100:
             raise app.thrift_module.PingPongException(
                 200, 'id cannot greater than 100')
-        return u'you got it'
+        return 'you got it'
 
     @app.api(name='ping')
     def ping():
