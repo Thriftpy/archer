@@ -2,6 +2,7 @@
 import os
 
 import sys
+sys.path.append('.')
 import importlib
 import traceback
 
@@ -10,6 +11,7 @@ import re
 
 from ._compat import iteritems
 from .helper import make_client
+
 
 
 class NoAppException(click.UsageError):
