@@ -71,7 +71,7 @@ class Archer(object):
                              under root path
         :param service: service name of the thrift app, if not set, archer
                         will automatically find a service in the dynamically
-                        loaded thrift_module
+                        loaded thrift
         :param root_path:  root path for file searching, default is pwd
 
         """
@@ -79,7 +79,7 @@ class Archer(object):
 
         self.thrift_file = thrift_file or self._find_thrift_file()
 
-        self.thrift_module = thriftpy.load(self.thrift_file)
+        self.thrift = thriftpy.load(self.thrift_file)
 
         self.service = self._find_service(service_name)
         self.name = name
@@ -105,11 +105,11 @@ class Archer(object):
 
     def _find_service(self, service_name):
         if service_name is None:
-            for k, v in iteritems(self.thrift_module.__dict__):
+            for k, v in iteritems(self.thrift.__dict__):
                 if isinstance(v, type) and issubclass(v, _BaseService):
                     self.service_name = k
                     return v
-        return getattr(self.thrift_module, service_name)
+        return getattr(self.thrift, service_name)
 
     def _find_thrift_file(self):
         def _find_in_dir(path):

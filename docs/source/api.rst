@@ -23,7 +23,7 @@ Application Object
 
    .. attribute:: thrift_file
 
-   .. attribute:: thrift_module
+   .. attribute:: thrift
 
    .. attribute:: service
 

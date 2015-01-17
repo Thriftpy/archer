@@ -9,7 +9,7 @@ def handler(meta, result):
 
 def test_exception_would_be_caught(app):
     client = app.test_client
-    with pytest.raises(app.thrift_module.PingPongException):
+    with pytest.raises(app.thrift.PingPongException):
         client.mget(120)
 
 
@@ -22,7 +22,7 @@ def test_register_default_error_handler(app):
 def test_register_error_handler(app):
     app.register_default_error_handler(handler)
 
-    @app.errorhandler(app.thrift_module.PingPongException)
+    @app.errorhandler(app.thrift.PingPongException)
     def hand(meta, result):
         return 'hand'
 
