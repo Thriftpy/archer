@@ -337,7 +337,7 @@ class Archer(object):
     def __getattr__(self, name):
         if name not in self.api_map:
             raise AttributeError(
-                '''app don't have `l{0}` attribute,
+                '''app don't have `{0}` attribute,
                    is it an api? if you mean an api,
                    this api `{0}` is not registered'''.format(name))
         return self.api_map[name]

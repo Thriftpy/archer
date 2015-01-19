@@ -184,3 +184,32 @@ def call(config, host, port, api, arguments):
     except Exception:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         click.echo(traceback.format_exc(exc_traceback))
+
+
+@main.command('client', short_help='Runs a client shell')
+@click.option('--host', '-h', default='127.0.0.1',
+              help='The interface to bind to.')
+@click.option('--port', '-p', default=6000,
+              help='The port to bind to.')
+@pass_config
+def client(config, host, port):
+    from .helper import make_client
+    app = locate_app(config.app)
+    client = make_client(app.service, host, port, 120)
+    banner = 'Python %s on %s\nApp: %s%s\n' % (
+        sys.version,
+        sys.platform,
+        app.name,
+        app.debug and ' [debug]' or '',
+    )
+    ctx = {'client': client}
+    ctx.update(app.make_shell_context())
+    sys.path.append('.')
+    try:
+        import IPython
+
+        IPython.embed(user_ns=ctx, banner1=banner)
+    except ImportError:
+        import code
+
+        code.interact(banner=banner, local=ctx)
