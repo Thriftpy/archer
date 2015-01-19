@@ -50,13 +50,23 @@ when detecting changes on your python or thrift file.
 Quick to get some feedback
 ``````````````````````````
 
-Just run the command
+Just run the command:
 
 .. code:: bash
 
    $ archer call ping
 
    * pong
+
+Use the client shell
+````````````````````
+
+Jump into shell with client at your hand:
+
+.. code:: bash
+
+   $ archer client
+   >>> client.ping()
 
 Pretty cool, eh!
 
