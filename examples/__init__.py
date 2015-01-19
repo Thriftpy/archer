@@ -12,6 +12,8 @@ def mget(ids):
 
 @app.api(name='ping')
 def ping():
+    import time
+    time.sleep(1)
     return 'pong'
 
 

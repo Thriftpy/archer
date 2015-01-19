@@ -11,7 +11,7 @@ PROTO_FACTORY = TCyBinaryProtocolFactory
 TRANS_FACTORY = TCyBufferedTransportFactory
 
 
-def make_client(service, host, port, timeout):
+def make_client(service, host, port, timeout=None):
     """
 
     :param service: thrift service type instance
@@ -20,7 +20,7 @@ def make_client(service, host, port, timeout):
     directly, without using a context directly
     """
     if timeout is None:
-        timeout = 1000
+        timeout = 120 * 1000
     return ClientProxy(service, host, port, timeout)
 
 

@@ -174,7 +174,7 @@ def call(config, host, port, api, arguments):
                 params.append(arg)
 
     app = locate_app(config.app)
-    client = make_client(app.service, host, port, timeout=10)
+    client = make_client(app.service, host, port)
     try:
         result = getattr(client, api)(*params)
         if result:
@@ -195,7 +195,7 @@ def call(config, host, port, api, arguments):
 def client(config, host, port):
     from .helper import make_client
     app = locate_app(config.app)
-    client = make_client(app.service, host, port, 120)
+    client = make_client(app.service, host, port)
     banner = 'Python %s on %s\nApp: %s%s\n' % (
         sys.version,
         sys.platform,
