@@ -56,6 +56,12 @@ Now run call the remote function you can also use the :command:`archer` command:
 
 You should see that the string `pong` is returned
 
+
+You can also run a client shell by::
+
+    $ archer client
+    >>> client.ping()
+
 .. _public-server:
 
 .. admonition:: Externally Visible Server
