@@ -22,6 +22,6 @@ In which,e is the Exception,f is the error handler,for example::
 
     app.register_error_handler(BasicException, BasicErrorHandler)
 
-The two arguments meta and result refers to :class:`~archer.app.ApiMeta` and :class:`~archer.app.ResultMeta`.
+The two arguments meta and result refers to :class:`~archer.app.ApiMeta` and :class:`~archer.app.ApiResultMeta`.
 
 Whenever a BasicException occurs,Archer will catch it and call BasicErrorHandler to handle it.
