@@ -52,11 +52,11 @@ def test_after_api_call(app):
     assert mock2.call_count == 1
 
 
-def tear_down_api_all(app):
+def test_tear_down_api_call(app):
     mock1 = mock.MagicMock()
     mock2 = mock.MagicMock()
-    app.tear_down_api_all(mock1)
-    app.tear_down_api_all(mock2)
+    app.tear_down_api_call(mock1)
+    app.tear_down_api_call(mock2)
     client = app.test_client
     client.mget(15)
     assert mock1.call_count == 1

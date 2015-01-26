@@ -237,7 +237,7 @@ class Archer(object):
         some error
 
         """
-        self.teardown_api_funcs.append(f)
+        self.tear_down_api_funcs.append(f)
         return f
 
     def api(self, name, **meta):
