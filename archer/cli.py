@@ -177,7 +177,7 @@ def call(config, host, port, api, arguments):
     client = make_client(app.service, host, port)
     try:
         result = getattr(client, api)(*params)
-        if result:
+        if result is not None:
             click.echo(result)
         else:
             click.echo('OK')

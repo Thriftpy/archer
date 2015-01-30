@@ -420,5 +420,5 @@ class Archer(object):
                 return False
             e.strerror = 'Unable to load configuration file (%s)' % e.strerror
             raise
-        self.from_object(d)
+        self.config_from_object(d)
         return True
