@@ -8,7 +8,6 @@ import errno
 import imp
 
 import thriftpy
-from thriftpy.parser import _BaseService
 from thriftpy.thrift import TProcessor
 
 from .config import ConfigAttribute, import_string
@@ -61,7 +60,7 @@ class Archer(object):
         'LOGGER_NAME': None
     }
 
-    def __init__(self, name, thrift_file=None, service_name=None, root_path=None):
+    def __init__(self, name, service_name, thrift_file=None, root_path=None):
         """
         initialize an archer application
 
@@ -69,9 +68,7 @@ class Archer(object):
         :param thrift_file:  the thrift file to load by thriftpy, if not set
                              ,archer will automatically find a .thrift file
                              under root path
-        :param service: service name of the thrift app, if not set, archer
-                        will automatically find a service in the dynamically
-                        loaded thrift
+        :param service: service name of the thrift app
         :param root_path:  root path for file searching, default is pwd
 
         """
@@ -81,7 +78,8 @@ class Archer(object):
 
         self.thrift = thriftpy.load(self.thrift_file)
 
-        self.service = self._find_service(service_name)
+        self.service_name = service_name
+        self.service = getattr(self.thrift, service_name)
         self.name = name
         self.app = TProcessor(self.service, self)
 
@@ -102,14 +100,6 @@ class Archer(object):
         self.config = copy.deepcopy(self.default_config)
 
         self.logger = logging.getLogger(self.logger_name)
-
-    def _find_service(self, service_name):
-        if service_name is None:
-            for k, v in iteritems(self.thrift.__dict__):
-                if isinstance(v, type) and issubclass(v, _BaseService):
-                    self.service_name = k
-                    return v
-        return getattr(self.thrift, service_name)
 
     def _find_thrift_file(self):
         def _find_in_dir(path):
