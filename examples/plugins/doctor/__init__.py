@@ -6,7 +6,7 @@ logging.basicConfig()
 from archer import Archer
 from doctor.plugins.archer import Doctor
 
-app = Archer('example_app', 'PingPong')
+app = Archer('PingPong')
 doctor = Doctor(app.thrift.PingPongException(
     -1,
     'HEALTH_CHECK_FAIL',

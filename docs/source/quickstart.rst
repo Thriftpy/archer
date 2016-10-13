@@ -14,7 +14,7 @@ A Minimal Application
 A minimal Archer application looks something like this::
 
     from archer import Archer
-    app = Archer(__name__)
+    app = Archer('PingPong')
 
     @app.api('ping')
     def ping():

@@ -60,7 +60,8 @@ class Archer(object):
         'LOGGER_NAME': None
     }
 
-    def __init__(self, name, service_name, thrift_file=None, root_path=None):
+    def __init__(self, service_name, thrift_file=None, root_path=None,
+            name=None):
         """
         initialize an archer application
 
@@ -139,7 +140,7 @@ class Archer(object):
         attributes that would be loaded in to the interactive shell
         e.g.::
 
-            app = Archer(__name__)
+            app = Archer('ServiceName')
             @app.shell_context_processor
             def redis_cli():
                 import redis

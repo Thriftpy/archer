@@ -2,7 +2,7 @@
 
 from archer import Archer
 
-app = Archer('example_app')
+app = Archer('PingPong')
 
 
 @app.api(name='mget', SDF=123, sdfxcof=123123)
