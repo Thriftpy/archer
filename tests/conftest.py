@@ -7,9 +7,9 @@ from archer import Archer
 @pytest.fixture
 def app():
     app = Archer(
-        'pingpong',
+        'PingPong',
         os.path.join(os.path.dirname(__file__), 'pingpong.thrift'),
-        service_name='PingPong')
+        )
 
     @app.api(name='mget', SDF=123, sdfxcof=123123)
     def mget(ids):

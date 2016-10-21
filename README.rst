@@ -15,7 +15,7 @@ Save in a hello.py:
 .. code:: python
 
    from archer import Archer
-   app = Archer(__name__)
+   app = Archer('PingPong')
 
    @app.api('ping')
    def ping():
