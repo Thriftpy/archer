@@ -28,6 +28,9 @@ define a service in the file::
         string ping(),
     }
 
+.. note:: ``Archer`` accepts one parameter, that is the name of the 
+    service defined in thrift file.
+
 So what did that code do?
 
 1. First we imported the :class:`~archer.Archer` class.  An instance of this
