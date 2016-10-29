@@ -29,7 +29,7 @@ define a service in the file::
     }
 
 .. note:: ``Archer`` accepts one parameter, that is the name of the 
-    service defined in thrift file.
+    service defined in the thrift file.
 
 So what did that code do?
 
