@@ -61,7 +61,7 @@ class Archer(object):
     }
 
     def __init__(self, service_name, thrift_file=None, root_path=None,
-            name=None):
+            name=None, module_name=None):
         """
         initialize an archer application
 
@@ -69,6 +69,8 @@ class Archer(object):
         :param thrift_file:  the thrift file to load by thriftpy, if not set
                              ,archer will automatically find a .thrift file
                              under root path
+        :param module_name: module name of the thrift module to be loaded,
+                            enables us to pickle the module objects
         :param service: service name of the thrift app
         :param root_path:  root path for file searching, default is pwd
 
@@ -77,7 +79,7 @@ class Archer(object):
 
         self.thrift_file = thrift_file or self._find_thrift_file()
 
-        self.thrift = thriftpy.load(self.thrift_file)
+        self.thrift = thriftpy.load(self.thrift_file, module_name=module_name)
 
         self.service_name = service_name
         self.service = getattr(self.thrift, service_name)
