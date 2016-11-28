@@ -2,6 +2,12 @@ Archer Changelog
 
 Here you can see the full list of changes between each Archer release.
 
+Version 0.5
+-----------
+
+* Allow archer to pass `module_name` to thriftpy #8
+
+
 Version 0.1
 -----------
 
